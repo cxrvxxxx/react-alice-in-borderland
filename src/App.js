@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, createContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Button from "@mui/material/Button";
 import CardContext from './contexts/CardContext';
@@ -197,7 +197,6 @@ const getWinner = (activeCards) => {
 }
 
 const App = () => {
-  const key = useRef(0);
   const [activeCards, setActiveCards] = useState({
     "playerOne": [],
     "playerTwo": []
@@ -220,7 +219,6 @@ const App = () => {
   }
 
   const handleDealCardsClick = (e) => {
-    e.preventDefault();
     const cards = dealCards();
     const p1Cards = cards.splice(0, 3);
     const p2Cards = cards;

@@ -1,7 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, createContext } from 'react';
 import './App.css';
 import Button from "@mui/material/Button";
-import Paper from '@mui/material/Paper';
+import CardContext from './contexts/CardContext';
+import Gallery from './components/Gallery/Gallery';
+import Scoreboard from './components/Scoreboard/Scoreboard';
 
 const getRandomNumber = (min, max) => {
   if (min >= 0 && max > min) {
@@ -9,45 +11,6 @@ const getRandomNumber = (min, max) => {
   } else {
     return null;
   }
-}
-
-const getCardImage = ({ suit, value }) => {
-  let path = "/images/cards/";
-
-  switch (value) {
-    case 14:
-      path += "ace_of_";
-      break;
-    case 11:
-      path += "jack_of_";
-      break;
-    case 12:
-      path += "queen_of_";
-      break;
-    case 13:
-      path += "king_of_";
-      break;
-    default:
-      path += value + "_of_";
-  }
-
-  switch (suit) {
-    case 1:
-      path += "clubs.png";
-      break;
-    case 2:
-      path += "diamonds.png";
-      break;
-    case 3:
-      path += "hearts.png";
-      break;
-    case 4:
-      path += "spades.png";
-      break;
-    default:
-  }
-
-  return path;
 }
 
 const dealCards = () => {
@@ -248,6 +211,14 @@ const App = () => {
   const [winPlayer, setWinPlayer] = useState(0);
   const [winReason, setWinReason] = useState("");
 
+  const cardContextValue = {
+    "activeCards": activeCards,
+    "score": score,
+    "winPlayer": winPlayer,
+    "winReason": winReason,
+    "score": score
+  }
+
   const handleDealCardsClick = (e) => {
     e.preventDefault();
     const cards = dealCards();
@@ -290,51 +261,18 @@ const App = () => {
 
   return (
     <div className="App">
-      <div className="gallery">
-        <div className={"card-container" + (winPlayer === 1 ? " winner" : "")}>
-          {activeCards?.playerOne.map((value) => (
-            <Paper
-              key={key.current++}
-              className="card"
-              variant="elevation"
-              elevation={4} >
-              <img src={getCardImage(value)} />
-            </Paper>
-          ))}
+      <CardContext.Provider value={cardContextValue}>
+        <Gallery />
+        <div className="win-reason">
+          <h1>{winReason}</h1>
         </div>
-        <div className={"card-container" + (winPlayer === 2 ? " winner" : "")}>
-          {activeCards?.playerTwo.map((value) => (
-            <Paper
-              key={key.current++}
-              className="card"
-              variant="elevation"
-              elevation={4} >
-              <img src={getCardImage(value)} />
-            </Paper>
-          ))}
+        <div className="button-container">
+          <Button variant="contained" color="success" size="large" onClick={handleDealCardsClick}>
+            Deal Cards
+          </Button>
         </div>
-      </div>
-      <div className="win-reason">
-        <h1>{winReason}</h1>
-      </div>
-      <div className="button-container">
-        <Button
-          variant="contained"
-          color="success"
-          size="large"
-          onClick={handleDealCardsClick}
-        >Deal Cards</Button>
-      </div>
-      <div className="scoreboard">
-        <div className="score">
-          <h4>Player One</h4>
-          <h1 className={"score-value" + (score.playerOne > score.playerTwo ? " leading" : "")} >{score.playerOne}</h1>
-        </div>
-        <div className="score">
-          <h4>Player Two</h4>
-          <h1 className={"score-value" + (score.playerOne < score.playerTwo ? " leading" : "")}>{score.playerTwo}</h1>
-        </div>
-      </div>
+        <Scoreboard />
+      </CardContext.Provider>
     </div>
   );
 }

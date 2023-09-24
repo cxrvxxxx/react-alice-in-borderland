@@ -48,13 +48,13 @@ const Gallery = () => {
 
     return (
         <div className="gallery">
-            <div className={"card-container" + (winner === 2 ? " winner" : "")}>
-                {cards?.playerTwo.map((card) => (
+            <div className={"card-container" + (winner === 1 ? " winner" : "")}>
+                {cards?.playerOne.map((card) => (
                     <GalleryItem key={key.current++} value={card} />
                 ))}
             </div>
-            <div className={"card-container" + (winner === 1 ? " winner" : "")}>
-                {cards?.playerOne.map((card) => (
+            <div className={"card-container" + (winner === 2 ? " winner" : "")}>
+                {cards?.playerTwo.map((card) => (
                     <GalleryItem key={key.current++} value={card} />
                 ))}
             </div>
